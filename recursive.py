@@ -15,20 +15,21 @@ class Recursive:
             self.actual.visited = True
             self.count_index += 1
 
-        pygame.draw.rect(window, (200,0,0), self.actual.rect)
-
         not_visited_edges = []
-
         for edge in self.actual.edges:
-            if not edge.node.visited:
+            if not self.actual.edges[edge].node.visited:
                 not_visited_edges.append(edge)
         
         if len(not_visited_edges) > 0:
-            self.actual = choice(not_visited_edges).node
-            
+            direction = choice(not_visited_edges)
+            self.actual.walls[direction] = False
+            self.actual = self.actual.edges[direction].node
+            self.actual.walls[self.actual.oposite_direction(direction)] = False
+
         else:
             self.count_index -= 1
             self.visited_nodes.remove(self.actual)
             self.actual = self.visited_nodes[self.count_index]
+            
         
 
