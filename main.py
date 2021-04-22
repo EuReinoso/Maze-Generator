@@ -1,5 +1,6 @@
 import pygame, sys
 import numpy as np
+from recursive import Recursive
 
 pygame.init()
 
@@ -8,6 +9,8 @@ class Node:
         self.rect = rect
         self.edges = []
         self.visited = False
+
+    
 
 class Edge:
     def __init__(self, node):
@@ -37,13 +40,26 @@ def init_edges():
             if j < len(grid_list[0]) - 1:
                 grid_list[i][j].edges.append(Edge(grid_list[i][j + 1]))
 
+def draw():
+    for i in range(len(grid_list)):
+        for j in range(len(grid_list[0])):
+            if grid_list[i][j].visited == True:
+                pygame.draw.rect(window, (200, 200, 200), grid_list[i][j].rect)
+
 window = pygame.display.set_mode(WINDOW_SIZE)
 pygame.display.set_caption('Maze')
 
+
+
 init_nodes()
 init_edges()
-while True:
 
+re = Recursive(grid_list[0][0])
+
+fps= 30
+time = pygame.time.Clock()
+while True:
+    
     window.fill((0, 0, 0))
 
     for event in pygame.event.get():
@@ -51,4 +67,7 @@ while True:
             pygame.quit()
             sys.exit()
 
+    draw()
+    re.generate(window)
     pygame.display.update()
+    time.tick(fps)
