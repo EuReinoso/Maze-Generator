@@ -29,7 +29,10 @@ class Recursive:
         else:
             self.count_index -= 1
             self.visited_nodes.remove(self.actual)
-            self.actual = self.visited_nodes[self.count_index]
+            try:
+                self.actual = self.visited_nodes[self.count_index]
+            except:
+                return
             
         
 
