@@ -8,6 +8,7 @@ class Recursive:
         self.count_index = -1
         self.visited_nodes = []
         self.actual = actual
+        self.end = False
 
     def generate(self, window):
         if not self.actual in self.visited_nodes: 
@@ -32,6 +33,7 @@ class Recursive:
             try:
                 self.actual = self.visited_nodes[self.count_index]
             except:
+                self.end = True
                 return
             
         

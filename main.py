@@ -29,7 +29,7 @@ class Edge:
 
 WINDOW_SIZE = (640, 480)
 
-tile_size = 20
+tile_size = 40
 grid_list = np.empty((WINDOW_SIZE[0]//tile_size, WINDOW_SIZE[1]//tile_size), dtype= object)
 
 def init_nodes():
@@ -70,14 +70,13 @@ def draw():
 window = pygame.display.set_mode(WINDOW_SIZE)
 pygame.display.set_caption('Maze')
 
-
-
 init_nodes()
 init_edges()
 
 re = Recursive(grid_list[0][0])
 
-fps= 3
+start = False
+fps= 60
 time = pygame.time.Clock()
 while True:
     
@@ -87,8 +86,13 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                start =  True
 
-    re.generate(window)
+    if start and not re.end:
+        re.generate(window)
+
     draw()
     pygame.display.update()
     time.tick(fps)
