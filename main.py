@@ -1,6 +1,7 @@
 import pygame, sys
 import numpy as np
 from recursive import Recursive
+from player import Player
 
 pygame.init()
 
@@ -32,15 +33,18 @@ WINDOW_SIZE = (640, 480)
 tile_size = 40
 grid_list = np.empty((WINDOW_SIZE[0]//tile_size, WINDOW_SIZE[1]//tile_size), dtype= object)
 
+player_rect = pygame.Rect(0, 0, tile_size, tile_size)
+player = Player(player_rect, (200, 0, 0))
+
 def init_nodes():
     for i in range(len(grid_list)):
-        for j in range(len(grid_list[0])):
+        for j in range(len(grid_list[i])):
             rect = pygame.Rect(i * tile_size, j * tile_size, tile_size, tile_size)
             grid_list[i][j] = Node(rect)
 
 def init_edges():
     for i in range(len(grid_list)):
-        for j in range(len(grid_list[0])):
+        for j in range(len(grid_list[i])):
             if i > 0:
                 grid_list[i][j].edges['left'] = Edge(grid_list[i - 1][j])
             if i < len(grid_list) - 1:
@@ -65,7 +69,8 @@ def draw():
                 if grid_list[i][j].walls['right']:
                     pygame.draw.line(window, (200,200,200), grid_list[i][j].rect.topright, grid_list[i][j].rect.bottomright, width=2)
 
-                pygame.draw.rect(window, (200,0,0), re.actual.rect)
+                if not re.end:
+                    pygame.draw.rect(window, (200,0,0), re.actual.rect)
                 
 window = pygame.display.set_mode(WINDOW_SIZE)
 pygame.display.set_caption('Maze')
@@ -75,24 +80,53 @@ init_edges()
 
 re = Recursive(grid_list[0][0])
 
-start = False
-fps= 60
-time = pygame.time.Clock()
-while True:
-    
-    window.fill((0, 0, 0))
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RETURN:
-                start =  True
+def maze_init():
 
-    if start and not re.end:
+    fps= 60
+    time = pygame.time.Clock()
+    loop = True
+
+    while loop:
+        
+        window.fill((0, 0, 0))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
         re.generate(window)
+        
+        if re.end:
+            loop = False
+            play()
 
-    draw()
-    pygame.display.update()
-    time.tick(fps)
+        draw()
+        pygame.display.update()
+        time.tick(fps)
+
+def play():
+    fps= 7
+    time = pygame.time.Clock()
+    loop = True
+
+    
+    while loop:
+        window.fill((0, 0, 0))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            player.set_dir(event)
+        
+        draw()
+
+        player.move(grid_list)
+        player.draw(window)
+
+        pygame.display.update()
+        time.tick(fps)    
+
+maze_init()
