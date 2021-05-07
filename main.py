@@ -4,6 +4,7 @@ from recursive import Recursive
 from player import Player
 
 pygame.init()
+pygame.font.init()
 
 class Node:
     def __init__(self, rect):
@@ -26,7 +27,6 @@ class Node:
 class Edge:
     def __init__(self, node):
         self.node = node
-        
 
 WINDOW_SIZE = (640, 480)
 
@@ -54,7 +54,7 @@ def init_edges():
             if j < len(grid_list[0]) - 1:
                 grid_list[i][j].edges['down'] = Edge(grid_list[i][j + 1])
 
-def draw():
+def draw_grid():
     for i in range(len(grid_list)):
         for j in range(len(grid_list[0])):
             if grid_list[i][j].visited == True:
@@ -71,6 +71,14 @@ def draw():
 
                 if not re.end:
                     pygame.draw.rect(window, (200,0,0), re.actual.rect)
+
+def draw_text(text, surface, size, color, pos):
+    font = pygame.font.SysFont(None, size)
+    text_render = font.render(text, 1, color)
+    text_rect = text_render.get_rect()
+    text_rect.topleft = pos
+    surface.blit(text_render, text_rect)
+
                 
 window = pygame.display.set_mode(WINDOW_SIZE)
 pygame.display.set_caption('Maze')
@@ -102,7 +110,7 @@ def maze_init():
             loop = False
             play()
 
-        draw()
+        draw_grid()
         pygame.display.update()
         time.tick(fps)
 
@@ -121,12 +129,14 @@ def play():
                 sys.exit()
             player.set_dir(event)
         
-        draw()
+        draw_grid()
 
         player.move(grid_list)
         player.draw(window)
 
         pygame.display.update()
-        time.tick(fps)    
+        time.tick(fps)
+
+
 
 maze_init()
