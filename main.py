@@ -36,9 +36,6 @@ grid_i = WINDOW_SIZE[0]//tile_size
 grid_j = WINDOW_SIZE[1]//tile_size - round(WINDOW_SIZE[1]//tile_size * 0.2)
 grid_list = np.empty((grid_i , grid_j), dtype= object)
 
-player_rect = pygame.Rect(0, 0, tile_size, tile_size)
-player = Player(player_rect, (200, 0, 0))
-
 def init_nodes():
     for i in range(len(grid_list)):
         for j in range(len(grid_list[i])):
@@ -123,7 +120,10 @@ def play():
     time = pygame.time.Clock()
     loop = True
 
-    
+    begin_node = grid_list[0][0]
+    player = Player(begin_node, (200, 0, 0))
+
+    objective = grid_list[-1][-1]
     while loop:
         window.fill((0, 0, 0))
 
@@ -133,11 +133,15 @@ def play():
                 sys.exit()
             player.set_dir(event)
         
+        if player.actual == objective:
+            loop= False
+
         draw_grid()
 
         player.move(grid_list)
         player.draw(window)
 
+        pygame.draw.rect(window, (0, 0, 0), objective.rect, border_radius= 20)
         pygame.display.update()
         time.tick(fps)
 

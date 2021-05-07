@@ -3,9 +3,11 @@ import pygame
 pygame.init()
 
 class Player:
-    def __init__(self, rect, color):
-        self.rect = rect
+    def __init__(self, start_node, color):
+        self.rect = start_node.rect
         self.color = color
+
+        self.actual = start_node
 
         self.right = False
         self.left = False
@@ -40,18 +42,18 @@ class Player:
         for i in range(len(grid_list)):
             for j in range(len(grid_list[i])):
                 if self.rect == grid_list[i][j].rect:
-                    actual = grid_list[i][j]
+                    self.actual = grid_list[i][j]
         
-        if self.right and not actual.walls['right']:
-            self.rect = actual.edges['right'].node.rect
+        if self.right and not self.actual.walls['right']:
+            self.rect = self.actual.edges['right'].node.rect
 
-        if self.left and not actual.walls['left'] :
-            self.rect = actual.edges['left'].node.rect
+        if self.left and not self.actual.walls['left'] :
+            self.rect = self.actual.edges['left'].node.rect
 
-        if self.down and not actual.walls['down']:
-            self.rect = actual.edges['down'].node.rect
+        if self.down and not self.actual.walls['down']:
+            self.rect = self.actual.edges['down'].node.rect
 
-        if self.up and not actual.walls['top']:
-            self.rect = actual.edges['top'].node.rect
+        if self.up and not self.actual.walls['top']:
+            self.rect = self.actual.edges['top'].node.rect
 
 
