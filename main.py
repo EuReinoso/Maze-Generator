@@ -2,6 +2,7 @@ import pygame, sys
 import numpy as np
 from recursive import Recursive
 from player import Player
+from button import Button
 
 pygame.init()
 pygame.font.init()
@@ -28,10 +29,12 @@ class Edge:
     def __init__(self, node):
         self.node = node
 
-WINDOW_SIZE = (640, 480)
+WINDOW_SIZE = (642, 480)
 
 tile_size = 40
-grid_list = np.empty((WINDOW_SIZE[0]//tile_size, WINDOW_SIZE[1]//tile_size), dtype= object)
+grid_i = WINDOW_SIZE[0]//tile_size
+grid_j = WINDOW_SIZE[1]//tile_size - round(WINDOW_SIZE[1]//tile_size * 0.2)
+grid_list = np.empty((grid_i , grid_j), dtype= object)
 
 player_rect = pygame.Rect(0, 0, tile_size, tile_size)
 player = Player(player_rect, (200, 0, 0))
@@ -76,8 +79,9 @@ def draw_text(text, surface, size, color, pos):
     font = pygame.font.SysFont(None, size)
     text_render = font.render(text, 1, color)
     text_rect = text_render.get_rect()
-    text_rect.topleft = pos
+    text_rect.center = pos
     surface.blit(text_render, text_rect)
+    
 
                 
 window = pygame.display.set_mode(WINDOW_SIZE)
@@ -137,6 +141,32 @@ def play():
         pygame.display.update()
         time.tick(fps)
 
+def menu():
+    fps= 60
+    time = pygame.time.Clock()
+    loop = True
+
+    button1_rect = pygame.Rect(220, 400, 200, 40)
+    button1 = Button(button1_rect, text= 'Generate!')
+
+    while loop:
+        window.fill((0, 0, 50))
+
+        mx, my =pygame.mouse.get_pos()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if button1.click(event, mx, my, color_change= True):
+                maze_init()
+                
+
+        draw_text('MENU', window, 100, (200, 200, 200), (window.get_rect().center[0], 100))    
+        button1.draw(window)         
+        
+        pygame.display.update()
+        time.tick(fps)
 
 
-maze_init()
+menu()
