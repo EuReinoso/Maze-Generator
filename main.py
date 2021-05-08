@@ -31,12 +31,20 @@ class Edge:
 
 WINDOW_SIZE = (642, 480)
 
-tile_size = 80
+window = pygame.display.set_mode(WINDOW_SIZE)
+pygame.display.set_caption('Maze')
+
+
+tile_size = 40
 grid_i = WINDOW_SIZE[0]//tile_size
 grid_j = (WINDOW_SIZE[1] - 48)//tile_size
 grid_list = np.empty((grid_i , grid_j), dtype= object)
 
 def init_nodes():
+    global tile_size, grid_i, grid_j, grid_list
+    grid_i = WINDOW_SIZE[0]//tile_size
+    grid_j = (WINDOW_SIZE[1] - 48)//tile_size
+    grid_list = np.empty((grid_i , grid_j), dtype= object)
     for i in range(len(grid_list)):
         for j in range(len(grid_list[i])):
             rect = pygame.Rect(i * tile_size, j * tile_size, tile_size, tile_size)
@@ -78,23 +86,32 @@ def draw_text(text, surface, size, color, pos):
     text_rect = text_render.get_rect()
     text_rect.center = pos
     surface.blit(text_render, text_rect)
-    
 
-                
-window = pygame.display.set_mode(WINDOW_SIZE)
-pygame.display.set_caption('Maze')
+def tile_size_select(buttons, tiles, event, mx, my):
+    global tile_size
+    for i in range(len(buttons)):
+        if buttons[i].click(event, mx, my):
+            tile_size = tiles[i]
+            buttons[i].selected = True
+            for b  in range(len(buttons)):
+                if buttons[b] !=  buttons[i]:
+                    buttons[b].selected = False
+            
 
-init_nodes()
-init_edges()
-
+        
 re = Recursive(grid_list[0][0])
-
 
 def maze_init():
 
     fps= 60
     time = pygame.time.Clock()
     loop = True
+
+    init_nodes()
+    init_edges()
+
+    global re
+    re = Recursive(grid_list[0][0])
 
     play_button_rect = pygame.Rect(window.get_rect().center[0] - (200/ 2), 430, 200, 40)
     play_button = Button(play_button_rect, text= 'PLAY')
@@ -130,6 +147,9 @@ def play():
     time = pygame.time.Clock()
     loop = True
 
+    game_time = 0
+    time_count = 1/ fps
+
     begin_node = grid_list[0][0]
     player = Player(begin_node, (200, 0, 0))
 
@@ -155,8 +175,13 @@ def play():
 
             if menu_button.on_up:
                 loop= False
+        else:
+            game_time += time_count
 
         draw_grid()
+        draw_text('Time: ' + str(round(game_time, 2)), window, 30, (200, 200, 200), (580, 440))
+
+        
 
         player.move(grid_list)
         player.draw(window)
@@ -173,22 +198,50 @@ def menu():
     button1_rect = pygame.Rect(220, 400, 200, 40)
     button1 = Button(button1_rect, text= 'Generate!')
 
+    tile_select_buttons_rect = []
+    tile_select_buttons_count = 3
+    tile_select_buttons_pos = [110, 200]
+
+    for i in range(tile_select_buttons_count):
+        tile_select_buttons_rect.append(pygame.Rect(tile_select_buttons_pos[0], tile_select_buttons_pos[1], 120, 30))
+        tile_select_buttons_pos[0] += 150
+    
+    tile_select_buttons = [
+            Button(tile_select_buttons_rect[0], text= 'Small'),
+            Button(tile_select_buttons_rect[1], text= 'Medium'),
+            Button(tile_select_buttons_rect[2], text= 'Large')
+        ]
+    
+    tile_select_buttons[1].selected = True
+
     while loop:
         window.fill((0, 0, 50))
 
         mx, my =pygame.mouse.get_pos()
 
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if button1.click(event, mx, my):
                 maze_init()
+            tile_size_select(tile_select_buttons, [80, 40, 20], event, mx, my)
                 
 
-        draw_text('MENU', window, 100, (200, 200, 200), (window.get_rect().center[0], 100))    
+        draw_text('MENU', window, 100, (200, 200, 200), (window.get_rect().center[0], 100))
+        draw_text('Select maze size', window, 30, (200, 200, 200), (window.get_rect().center[0], 170))
+
         button1.draw(window)         
         
+        for button in tile_select_buttons:
+            if button.selected:
+                button.color = (50, 150, 50)
+            else:
+                button.color = (100, 100, 100)
+
+            button.draw(window)
+
         pygame.display.update()
         time.tick(fps)
 

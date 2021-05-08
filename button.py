@@ -11,6 +11,7 @@ class Button:
         self.text_color = text_color
         self.on_down = False
         self.on_up = False
+        self.selected = False
 
     def draw(self, window):
         pygame.draw.rect(window, self.color, self.rect)
@@ -23,8 +24,14 @@ class Button:
         text_rect = text_render.get_rect()
         text_rect.center = self.rect.center
         surface.blit(text_render, text_rect)
+    
+    def turn_select(self):
+        if self.selected:
+            self.selected = False
+        else:
+            self.selected = True
 
-    def click(self, event, mx, my, color_change = True, color_down = (100, 100, 200), color_up= (128, 128, 128)):
+    def click(self, event, mx, my, color_change = True, color_down = (100, 100, 200), color_up= (100, 100, 100)):
         if self.rect.collidepoint((mx, my)):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -42,5 +49,6 @@ class Button:
                     
                     self.on_down = False
                     self.on_up = True
+
                     return True
                 
