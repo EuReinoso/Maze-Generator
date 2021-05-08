@@ -31,9 +31,9 @@ class Edge:
 
 WINDOW_SIZE = (642, 480)
 
-tile_size = 40
+tile_size = 80
 grid_i = WINDOW_SIZE[0]//tile_size
-grid_j = WINDOW_SIZE[1]//tile_size - round(WINDOW_SIZE[1]//tile_size * 0.2)
+grid_j = (WINDOW_SIZE[1] - 48)//tile_size
 grid_list = np.empty((grid_i , grid_j), dtype= object)
 
 def init_nodes():
@@ -96,20 +96,30 @@ def maze_init():
     time = pygame.time.Clock()
     loop = True
 
+    play_button_rect = pygame.Rect(window.get_rect().center[0] - (200/ 2), 430, 200, 40)
+    play_button = Button(play_button_rect, text= 'PLAY')
     while loop:
         
         window.fill((0, 0, 0))
+
+        mx, my = pygame.mouse.get_pos()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            play_button.click(event, mx, my)
 
         re.generate(window)
         
-        if re.end:
-            loop = False
-            play()
+        if not re.end:
+            draw_text('Generating...', window, 30, (200, 200, 200), (window.get_rect().center[0], 448))
+        
+        else:
+            play_button.draw(window)
+            if play_button.on_up:
+                loop = False
+                play()
 
         draw_grid()
         pygame.display.update()
@@ -124,17 +134,27 @@ def play():
     player = Player(begin_node, (200, 0, 0))
 
     objective = grid_list[-1][-1]
+
+    menu_button_rect = pygame.Rect(10, 430, 150, 40)
+    menu_button = Button(menu_button_rect, text= '< MENU')
     while loop:
         window.fill((0, 0, 0))
+
+        mx, my = pygame.mouse.get_pos()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             player.set_dir(event)
-        
+            menu_button.click(event, mx, my)
+
         if player.actual == objective:
-            loop= False
+            draw_text('YOU WIN!', window, 40, (200, 200, 200), (window.get_rect().center[0], 440) )
+            menu_button.draw(window)
+
+            if menu_button.on_up:
+                loop= False
 
         draw_grid()
 
@@ -162,7 +182,7 @@ def menu():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if button1.click(event, mx, my, color_change= True):
+            if button1.click(event, mx, my):
                 maze_init()
                 
 
