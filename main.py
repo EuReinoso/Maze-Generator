@@ -62,24 +62,6 @@ def init_edges():
             if j < len(grid_list[0]) - 1:
                 grid_list[i][j].edges['down'] = Edge(grid_list[i][j + 1])
 
-def draw_grid():
-    for i in range(len(grid_list)):
-        for j in range(len(grid_list[0])):
-            if grid_list[i][j].visited == True:
-                pygame.draw.rect(window, (50, 50, 200), grid_list[i][j].rect)
-
-                if grid_list[i][j].walls['top']:
-                    pygame.draw.line(window, (200,200,200), grid_list[i][j].rect.topleft, grid_list[i][j].rect.topright, width=2)
-                if grid_list[i][j].walls['down']:
-                    pygame.draw.line(window, (200,200,200), grid_list[i][j].rect.bottomleft, grid_list[i][j].rect.bottomright, width=2)
-                if grid_list[i][j].walls['left']:
-                    pygame.draw.line(window, (200,200,200), grid_list[i][j].rect.topleft, grid_list[i][j].rect.bottomleft, width=2)
-                if grid_list[i][j].walls['right']:
-                    pygame.draw.line(window, (200,200,200), grid_list[i][j].rect.topright, grid_list[i][j].rect.bottomright, width=2)
-
-                if not re.end:
-                    pygame.draw.rect(window, (200,0,0), re.actual.rect)
-
 def draw_text(text, surface, size, color, pos):
     font = pygame.font.SysFont(None, size)
     text_render = font.render(text, 1, color)
@@ -127,7 +109,7 @@ def maze_init():
                 sys.exit()
             play_button.click(event, mx, my)
 
-        re.generate(window)
+        re.generate()
         
         if not re.end:
             draw_text('Generating...', window, 30, (200, 200, 200), (window.get_rect().center[0], 448))
@@ -138,7 +120,7 @@ def maze_init():
                 loop = False
                 play()
 
-        draw_grid()
+        re.draw_grid(window, grid_list)
         pygame.display.update()
         time.tick(fps)
 
@@ -178,7 +160,7 @@ def play():
         else:
             game_time += time_count
 
-        draw_grid()
+        re.draw_grid(window, grid_list)
         draw_text('Time: ' + str(round(game_time, 2)), window, 30, (200, 200, 200), (580, 440))
 
         

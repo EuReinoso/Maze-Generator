@@ -10,7 +10,7 @@ class Recursive:
         self.actual = actual
         self.end = False
 
-    def generate(self, window):
+    def generate(self):
         if not self.actual in self.visited_nodes: 
             self.visited_nodes.append(self.actual)
             self.actual.visited = True
@@ -35,6 +35,30 @@ class Recursive:
             except:
                 self.end = True
                 return
+
+    def draw_grid(self, window, grid_list):
+        for i in range(len(grid_list)):
+            for j in range(len(grid_list[i])):
+
+                if grid_list[i][j].visited == True:
+                    pygame.draw.rect(window, (50, 50, 200), grid_list[i][j].rect)
+
+                    if grid_list[i][j] in self.visited_nodes:
+                        pygame.draw.rect(window, (100, 100, 200), grid_list[i][j].rect)
+
+                    if grid_list[i][j].walls['top']:
+                        pygame.draw.line(window, (200,200,200), grid_list[i][j].rect.topleft, grid_list[i][j].rect.topright, width=2)
+                    if grid_list[i][j].walls['down']:
+                        pygame.draw.line(window, (200,200,200), grid_list[i][j].rect.bottomleft, grid_list[i][j].rect.bottomright, width=2)
+                    if grid_list[i][j].walls['left']:
+                        pygame.draw.line(window, (200,200,200), grid_list[i][j].rect.topleft, grid_list[i][j].rect.bottomleft, width=2)
+                    if grid_list[i][j].walls['right']:
+                        pygame.draw.line(window, (200,200,200), grid_list[i][j].rect.topright, grid_list[i][j].rect.bottomright, width=2)
+
+                if not self.end:
+                    pygame.draw.rect(window, (200, 0, 0), self.actual.rect)
+
+                
             
         
 
