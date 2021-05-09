@@ -14,8 +14,25 @@ class Node:
         self.visited = False
 
         self.walls = {'top' : True, 'down' : True, 'left': True, 'right' : True}
+        self.walls_rect = self.walls_rect_init()
+
+    def walls_rect_init(self):
+        walls_rect = {}
+
+        walls_rect['top'] = pygame.Rect(self.rect.topleft[0],self.rect.topleft[1],
+                    self.rect.width, 2)
+
+        walls_rect['left'] = pygame.Rect(self.rect.topleft[0],self.rect.topleft[1],
+                    2, self.rect.height)
+
+        walls_rect['bottom'] = pygame.Rect(self.rect.bottomleft[0],self.rect.bottomleft[1],
+                    self.rect.width, 2)
         
-    
+        walls_rect['right'] = pygame.Rect(self.rect.topright[0],self.rect.topright[1],
+                    2, self.rect.height)
+
+        return walls_rect
+
     def oposite_direction(self, direction):
         if direction == 'top':
             return 'down'
@@ -82,6 +99,7 @@ def tile_size_select(buttons, tiles, event, mx, my):
 
         
 re = Recursive(grid_list[0][0])
+
 
 def maze_init():
 
@@ -162,8 +180,6 @@ def play():
 
         re.draw_grid(window, grid_list)
         draw_text('Time: ' + str(round(game_time, 2)), window, 30, (200, 200, 200), (580, 440))
-
-        
 
         player.move(grid_list)
         player.draw(window)
