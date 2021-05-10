@@ -12,7 +12,7 @@ pygame.font.init()
 WINDOW_SIZE = (642, 480)
 
 window = pygame.display.set_mode(WINDOW_SIZE)
-pygame.display.set_caption('Maze')
+pygame.display.set_caption('Maze Generator')
 
 tile_size = 40
 grid_i = WINDOW_SIZE[0]//tile_size
@@ -267,7 +267,7 @@ def menu():
             name = algorithm_select(algorithm_select_buttons, event, mx, my, name)
                 
 
-        draw_text('MENU', window, 100, (200, 200, 200), (window.get_rect().center[0], 100))
+        draw_text('MAZE GENERATOR', window, 70, (200, 200, 200), (window.get_rect().center[0], 100))
         draw_text('Select maze size', window, 30, (200, 200, 200), (window.get_rect().center[0], 170))
         draw_text('Select algorithm', window, 30, (200, 200, 200), (window.get_rect().center[0], 270))
 
