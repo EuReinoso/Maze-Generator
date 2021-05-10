@@ -104,6 +104,19 @@ def tile_size_select(buttons, tiles, event, mx, my):
             for b  in range(len(buttons)):
                 if buttons[b] !=  buttons[i]:
                     buttons[b].selected = False
+
+def create_select_buttons(quant, pos, size, space= 30, texts= []):
+    select_buttons = []
+
+    for i in range(quant):
+        rect = pygame.Rect(pos[0], pos[1], size[0], size[1])
+        button = Button(rect, text= texts[i])
+        select_buttons.append(button)
+        pos[0] += size[0] + space
+    
+    return select_buttons
+
+
             
 def maze_init():
 
@@ -120,6 +133,9 @@ def maze_init():
 
     play_button_rect = pygame.Rect(window.get_rect().center[0] - (200/ 2), 430, 200, 40)
     play_button = Button(play_button_rect, text= 'PLAY')
+
+    menu_button_rect = pygame.Rect(10, 440, 100, 30)
+    menu_button = Button(menu_button_rect, text= '< MENU')
     while loop:
         
         window.fill((0, 0, 0))
@@ -131,6 +147,8 @@ def maze_init():
                 pygame.quit()
                 sys.exit()
             play_button.click(event, mx, my)
+            if menu_button.click(event, mx, my):
+                loop = False
 
         algorithm.generate()
         
@@ -144,6 +162,8 @@ def maze_init():
                 play(algorithm)
 
         algorithm.draw_grid(window, grid_list)
+
+        menu_button.draw(window)
         pygame.display.update()
         time.tick(fps)
 
@@ -160,7 +180,7 @@ def play(algorithm):
 
     objective = grid_list[-1][-1]
 
-    menu_button_rect = pygame.Rect(10, 430, 150, 40)
+    menu_button_rect = pygame.Rect(10, 440, 100, 30)
     menu_button = Button(menu_button_rect, text= '< MENU')
     while loop:
         window.fill((0, 0, 0))
@@ -172,18 +192,16 @@ def play(algorithm):
                 pygame.quit()
                 sys.exit()
             player.set_dir(event)
-            menu_button.click(event, mx, my)
+            if menu_button.click(event, mx, my):
+                loop = False
 
         if player.actual == objective:
             draw_text('YOU WIN!', window, 40, (200, 200, 200), (window.get_rect().center[0], 440) )
-            menu_button.draw(window)
-
-            if menu_button.on_up:
-                loop= False
         else:
             game_time += time_count
 
         algorithm.draw_grid(window, grid_list)
+        menu_button.draw(window)
         draw_text('Time: ' + str(round(game_time, 2)), window, 30, (200, 200, 200), (580, 440))
 
         player.move(grid_list)
@@ -201,27 +219,13 @@ def menu():
     button1_rect = pygame.Rect(220, 400, 200, 40)
     button1 = Button(button1_rect, text= 'Generate!')
 
-    tile_select_buttons_rect = []
-    tile_select_buttons_count = 3
-    tile_select_buttons_pos = [110, 200]
-
-    for i in range(tile_select_buttons_count):
-        tile_select_buttons_rect.append(pygame.Rect(tile_select_buttons_pos[0], tile_select_buttons_pos[1], 120, 30))
-        tile_select_buttons_pos[0] += 150
-    
-    tile_select_buttons = [
-            Button(tile_select_buttons_rect[0], text= 'Small'),
-            Button(tile_select_buttons_rect[1], text= 'Medium'),
-            Button(tile_select_buttons_rect[2], text= 'Large')
-        ]
-    
+    tile_select_buttons = create_select_buttons(3, [110, 200], [120, 30], texts= ['Small', 'Medium', 'Large'])
     tile_select_buttons[1].selected = True
 
     while loop:
         window.fill((0, 0, 50))
 
         mx, my =pygame.mouse.get_pos()
-
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -247,6 +251,5 @@ def menu():
 
         pygame.display.update()
         time.tick(fps)
-
 
 menu()
