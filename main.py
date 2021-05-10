@@ -2,6 +2,7 @@ import pygame, sys
 import numpy as np
 from recursive import Recursive
 from kruskal import Kruskal
+from binary import Binary
 from player import Player
 from button import Button
 
@@ -19,7 +20,7 @@ grid_j = (WINDOW_SIZE[1] - 48)//tile_size
 grid_list = np.empty((grid_i , grid_j), dtype= object)
 
 algorithms = {}
-algorithm_names = ['Recursive', 'Kruskal']
+algorithm_names = ['Recursive', 'Kruskal', 'Binary']
 
 class Node:
     def __init__(self, rect):
@@ -132,7 +133,8 @@ def create_select_buttons(quant, pos, size, space= 30, texts= []):
 def algorithms_init():
     algorithms_list = [
         Recursive(grid_list[0][0]), 
-        Kruskal(grid_list)]
+        Kruskal(grid_list),
+        Binary(grid_list)]
     
     algorithms = {}
     for i in range(len(algorithms_list)):
@@ -247,7 +249,7 @@ def menu():
     tile_select_buttons = create_select_buttons(3, [110, 200], [120, 30], texts= ['Small', 'Medium', 'Large'])
     tile_select_buttons[1].selected = True
 
-    algorithm_select_buttons = create_select_buttons(2, [110, 300], [120, 30], texts= algorithm_names )
+    algorithm_select_buttons = create_select_buttons(3, [110, 300], [120, 30], texts= algorithm_names )
     algorithm_select_buttons[0].selected = True
     name = algorithm_names[0]
     while loop:
