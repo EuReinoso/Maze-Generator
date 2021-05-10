@@ -18,6 +18,9 @@ grid_i = WINDOW_SIZE[0]//tile_size
 grid_j = (WINDOW_SIZE[1] - 48)//tile_size
 grid_list = np.empty((grid_i , grid_j), dtype= object)
 
+algorithms = {}
+algorithm_names = ['Recursive', 'Kruskal']
+
 class Node:
     def __init__(self, rect):
         self.rect = rect
@@ -95,7 +98,7 @@ def draw_text(text, surface, size, color, pos):
     text_rect.center = pos
     surface.blit(text_render, text_rect)
 
-def tile_size_select(buttons, tiles, event, mx, my):
+def tile_size_select(buttons, event, mx, my, tiles,):
     global tile_size
     for i in range(len(buttons)):
         if buttons[i].click(event, mx, my):
@@ -104,6 +107,16 @@ def tile_size_select(buttons, tiles, event, mx, my):
             for b  in range(len(buttons)):
                 if buttons[b] !=  buttons[i]:
                     buttons[b].selected = False
+
+def algorithm_select(buttons,  event, mx, my, name):
+    for i in range(len(buttons)):
+        if buttons[i].click(event, mx, my):
+            name = algorithm_names[i]
+            buttons[i].selected = True
+            for b in range(len(buttons)):
+                if buttons[b] != buttons[i]:
+                    buttons[b].selected = False
+    return name
 
 def create_select_buttons(quant, pos, size, space= 30, texts= []):
     select_buttons = []
@@ -116,9 +129,18 @@ def create_select_buttons(quant, pos, size, space= 30, texts= []):
     
     return select_buttons
 
+def algorithms_init():
+    algorithms_list = [
+        Recursive(grid_list[0][0]), 
+        Kruskal(grid_list)]
+    
+    algorithms = {}
+    for i in range(len(algorithms_list)):
+        algorithms[algorithm_names[i]] = algorithms_list[i]
+    
+    return algorithms
 
-            
-def maze_init():
+def maze_init(name):
 
     fps= 60
     time = pygame.time.Clock()
@@ -127,9 +149,12 @@ def maze_init():
     init_nodes()
     init_edges()
 
-    re = Recursive(grid_list[0][0])
-    kr = Kruskal(grid_list)
-    algorithm = kr
+    algorithms = algorithms_init()
+    algorithm = None
+
+    for alg_name in algorithms:
+        if alg_name == name:
+            algorithm = algorithms[alg_name]
 
     play_button_rect = pygame.Rect(window.get_rect().center[0] - (200/ 2), 430, 200, 40)
     play_button = Button(play_button_rect, text= 'PLAY')
@@ -222,26 +247,39 @@ def menu():
     tile_select_buttons = create_select_buttons(3, [110, 200], [120, 30], texts= ['Small', 'Medium', 'Large'])
     tile_select_buttons[1].selected = True
 
+    algorithm_select_buttons = create_select_buttons(2, [110, 300], [120, 30], texts= algorithm_names )
+    algorithm_select_buttons[0].selected = True
+    name = algorithm_names[0]
     while loop:
         window.fill((0, 0, 50))
 
         mx, my =pygame.mouse.get_pos()
-        
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if button1.click(event, mx, my):
-                maze_init()
-            tile_size_select(tile_select_buttons, [80, 40, 20], event, mx, my)
+                maze_init(name)
+            tile_size_select(tile_select_buttons, event, mx, my, [80, 40, 20])
+            name = algorithm_select(algorithm_select_buttons, event, mx, my, name)
                 
 
         draw_text('MENU', window, 100, (200, 200, 200), (window.get_rect().center[0], 100))
         draw_text('Select maze size', window, 30, (200, 200, 200), (window.get_rect().center[0], 170))
+        draw_text('Select algorithm', window, 30, (200, 200, 200), (window.get_rect().center[0], 270))
 
         button1.draw(window)         
         
         for button in tile_select_buttons:
+            if button.selected:
+                button.color = (50, 150, 50)
+            else:
+                button.color = (100, 100, 100)
+
+            button.draw(window)
+        
+        for button in algorithm_select_buttons:
             if button.selected:
                 button.color = (50, 150, 50)
             else:
