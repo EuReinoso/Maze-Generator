@@ -50,8 +50,8 @@ class Player:
         if self.left and not self.actual.walls['left'] :
             self.rect = self.actual.edges['left'].node.rect
 
-        if self.down and not self.actual.walls['down']:
-            self.rect = self.actual.edges['down'].node.rect
+        if self.down and not self.actual.walls['bottom']:
+            self.rect = self.actual.edges['bottom'].node.rect
 
         if self.up and not self.actual.walls['top']:
             self.rect = self.actual.edges['top'].node.rect

@@ -48,7 +48,7 @@ class Recursive:
 
                     if grid_list[i][j].walls['top']:
                         pygame.draw.line(window, (200,200,200), grid_list[i][j].rect.topleft, grid_list[i][j].rect.topright, width=2)
-                    if grid_list[i][j].walls['down']:
+                    if grid_list[i][j].walls['bottom']:
                         pygame.draw.line(window, (200,200,200), grid_list[i][j].rect.bottomleft, grid_list[i][j].rect.bottomright, width=2)
                     if grid_list[i][j].walls['left']:
                         pygame.draw.line(window, (200,200,200), grid_list[i][j].rect.topleft, grid_list[i][j].rect.bottomleft, width=2)
