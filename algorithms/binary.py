@@ -28,7 +28,7 @@ class Binary:
     def generate(self):
         if not self.end:
             self.actual.visited = True
-            print(self.index_i, self.index_j)
+            
             if self.index_i > 0 and self.index_j > 0:
                 direction = choice(self.directions)
                 o_direction = oposite_direction(direction)

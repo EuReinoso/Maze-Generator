@@ -4,10 +4,10 @@ add algorithm on 'algorithm_names', algorithms_init, menu/algorithm_select_butto
 
 import pygame, sys
 import numpy as np
-from recursive import Recursive
-from kruskal import Kruskal
-from binary import Binary
-from prim import Prim
+from algorithms.recursive import Recursive
+from algorithms.kruskal import Kruskal
+from algorithms.binary import Binary
+from algorithms.prim import Prim
 from player import Player
 from button import Button
 
