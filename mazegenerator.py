@@ -4,12 +4,12 @@ add algorithm on 'algorithm_names', algorithms_init, menu/algorithm_select_butto
 
 import pygame, sys
 import numpy as np
-from algorithms.recursive import Recursive
-from algorithms.kruskal import Kruskal
-from algorithms.binary import Binary
-from algorithms.prim import Prim
-from player import Player
-from button import Button
+from scripts.algorithms.recursive import Recursive
+from scripts.algorithms.kruskal import Kruskal
+from scripts.algorithms.binary import Binary
+from scripts.algorithms.prim import Prim
+from scripts.player import Player
+from scripts.button import Button
 
 pygame.init()
 pygame.font.init()
@@ -98,7 +98,7 @@ def init_edges():
                 grid_list[i][j].edges['bottom'] = Edge(grid_list[i][j + 1])
 
 def draw_text(text, surface, size, color, pos):
-    font = pygame.font.SysFont(None, size)
+    font = pygame.font.SysFont('calibri', size)
     text_render = font.render(text, 1, color)
     text_rect = text_render.get_rect()
     text_rect.center = pos
@@ -229,13 +229,13 @@ def play(algorithm):
                 loop = False
 
         if player.actual == objective:
-            draw_text('YOU WIN!', window, 40, (200, 200, 200), (window.get_rect().center[0], 440) )
+            draw_text('YOU WIN!', window, 30, (200, 200, 200), (window.get_rect().center[0], 440) )
         else:
             game_time += time_count
 
         algorithm.draw_grid(window, grid_list)
         menu_button.draw(window)
-        draw_text('Time: ' + str(round(game_time, 2)), window, 30, (200, 200, 200), (580, 440))
+        draw_text('Time: ' + str(round(game_time, 2)), window, 25, (200, 200, 200), (570, 440))
 
         player.move(grid_list)
         player.draw(window)
@@ -273,9 +273,9 @@ def menu():
             name = algorithm_select(algorithm_select_buttons, event, mx, my, name)
                 
 
-        draw_text('MAZE GENERATOR', window, 70, (200, 200, 200), (window.get_rect().center[0], 100))
-        draw_text('Select maze size', window, 30, (200, 200, 200), (window.get_rect().center[0], 170))
-        draw_text('Select algorithm', window, 30, (200, 200, 200), (window.get_rect().center[0], 270))
+        draw_text('MAZE GENERATOR', window, 60, (200, 200, 200), (window.get_rect().center[0], 100))
+        draw_text('Select maze size', window, 25, (200, 200, 200), (window.get_rect().center[0], 170))
+        draw_text('Select algorithm', window, 25, (200, 200, 200), (window.get_rect().center[0], 270))
 
         button1.draw(window)         
         
