@@ -229,7 +229,7 @@ def play(algorithm):
                 loop = False
 
         if player.actual == objective:
-            draw_text('YOU WIN!', window, 30, (200, 200, 200), (window.get_rect().center[0], 440) )
+            draw_text('YOU WIN!', window, 30, (200, 200, 200), (window.get_rect().center[0], 440))
         else:
             game_time += time_count
 
